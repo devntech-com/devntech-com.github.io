@@ -1,8 +1,8 @@
 /**
-* Template Name: Techie - v2.2.0
-* Template URL: https://bootstrapmade.com/techie-free-skin-bootstrap-3/
-* Author: BootstrapMade.com
-* License: https://bootstrapmade.com/license/
+* Template Name: DevnTech - v2.2.0
+* Template URL: https://devntech.com/techie-free-skin-bootstrap-3/
+* Author: DevnTech.com
+* License: https://devntech.com/license/
 */
 !(function($) {
   "use strict";
