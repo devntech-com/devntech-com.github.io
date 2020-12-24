@@ -3031,7 +3031,7 @@
    * is right.<br />
    * Vertically (`left` and `right`), `start` is top and `end` is bottom.
    *
-   * Some valid examples are:
+   * Some valid devntechs are:
    * - `top-end` (on top of reference, right aligned)
    * - `right-start` (on right of reference, top aligned)
    * - `bottom` (on bottom, centered)
@@ -3601,7 +3601,7 @@
      * Additionally, it accepts additions and subtractions between different units.
      * Note that multiplications and divisions aren't supported.
      *
-     * Valid examples are:
+     * Valid devntechs are:
      * ```
      * 10
      * '10%'
@@ -3904,7 +3904,7 @@
    * Default options provided to Popper.js constructor.<br />
    * These can be overridden using the `options` argument of Popper.js.<br />
    * To override an option, simply pass an object with the same
-   * structure of the `options` object, as the 3rd argument. For example:
+   * structure of the `options` object, as the 3rd argument. For devntech:
    * ```
    * new Popper(ref, pop, {
    *   modifiers: {
