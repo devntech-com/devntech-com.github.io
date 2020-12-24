@@ -1,190 +1,220 @@
-/*
-	Hyperspace by HTML5 UP
-	html5up.net | @ajlkn
-	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+/**
+* Template Name: Techie - v2.2.0
+* Template URL: https://bootstrapmade.com/techie-free-skin-bootstrap-3/
+* Author: BootstrapMade.com
+* License: https://bootstrapmade.com/license/
 */
+!(function($) {
+  "use strict";
 
-(function($) {
+  // Preloader
+  $(window).on('load', function() {
+    if ($('#preloader').length) {
+      $('#preloader').delay(100).fadeOut('slow', function() {
+        $(this).remove();
+      });
+    }
+  });
 
-	var	$window = $(window),
-		$body = $('body'),
-		$sidebar = $('#sidebar');
+  // Smooth scroll for the navigation menu and links with .scrollto classes
+  var scrolltoOffset = $('#header').outerHeight() - 16;
+  if (window.matchMedia("(max-width: 991px)").matches) {
+    scrolltoOffset += 16;
+  }
+  $(document).on('click', '.nav-menu a, .mobile-nav a, .scrollto', function(e) {
+    if (location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '') && location.hostname == this.hostname) {
+      e.preventDefault();
+      var target = $(this.hash);
+      if (target.length) {
 
-	// Breakpoints.
-		breakpoints({
-			xlarge:   [ '1281px',  '1680px' ],
-			large:    [ '981px',   '1280px' ],
-			medium:   [ '737px',   '980px'  ],
-			small:    [ '481px',   '736px'  ],
-			xsmall:   [ null,      '480px'  ]
-		});
+        var scrollto = target.offset().top - scrolltoOffset;
 
-	// Hack: Enable IE flexbox workarounds.
-		if (browser.name == 'ie')
-			$body.addClass('is-ie');
+        if ($(this).attr("href") == '#header') {
+          scrollto = 0;
+        }
 
-	// Play initial animations on page load.
-		$window.on('load', function() {
-			window.setTimeout(function() {
-				$body.removeClass('is-preload');
-			}, 100);
-		});
+        $('html, body').animate({
+          scrollTop: scrollto
+        }, 1500, 'easeInOutExpo');
 
-	// Forms.
+        if ($(this).parents('.nav-menu, .mobile-nav').length) {
+          $('.nav-menu .active, .mobile-nav .active').removeClass('active');
+          $(this).closest('li').addClass('active');
+        }
 
-		// Hack: Activate non-input submits.
-			$('form').on('click', '.submit', function(event) {
+        if ($('body').hasClass('mobile-nav-active')) {
+          $('body').removeClass('mobile-nav-active');
+          $('.mobile-nav-toggle i').toggleClass('icofont-navigation-menu icofont-close');
+          $('.mobile-nav-overly').fadeOut();
+        }
+        return false;
+      }
+    }
+  });
 
-				// Stop propagation, default.
-					event.stopPropagation();
-					event.preventDefault();
+  // Activate smooth scroll on page load with hash links in the url
+  $(document).ready(function() {
+    if (window.location.hash) {
+      var initial_nav = window.location.hash;
+      if ($(initial_nav).length) {
+        var scrollto = $(initial_nav).offset().top - scrolltoOffset;
+        $('html, body').animate({
+          scrollTop: scrollto
+        }, 1500, 'easeInOutExpo');
+      }
+    }
+  });
 
-				// Submit form.
-					$(this).parents('form').submit();
+  // Mobile Navigation
+  if ($('.nav-menu').length) {
+    var $mobile_nav = $('.nav-menu').clone().prop({
+      class: 'mobile-nav d-lg-none'
+    });
+    $('body').append($mobile_nav);
+    $('body').prepend('<button type="button" class="mobile-nav-toggle d-lg-none"><i class="icofont-navigation-menu"></i></button>');
+    $('body').append('<div class="mobile-nav-overly"></div>');
 
-			});
+    $(document).on('click', '.mobile-nav-toggle', function(e) {
+      $('body').toggleClass('mobile-nav-active');
+      $('.mobile-nav-toggle i').toggleClass('icofont-navigation-menu icofont-close');
+      $('.mobile-nav-overly').toggle();
+    });
 
-	// Sidebar.
-		if ($sidebar.length > 0) {
+    $(document).on('click', '.mobile-nav .drop-down > a', function(e) {
+      e.preventDefault();
+      $(this).next().slideToggle(300);
+      $(this).parent().toggleClass('active');
+    });
 
-			var $sidebar_a = $sidebar.find('a');
+    $(document).click(function(e) {
+      var container = $(".mobile-nav, .mobile-nav-toggle");
+      if (!container.is(e.target) && container.has(e.target).length === 0) {
+        if ($('body').hasClass('mobile-nav-active')) {
+          $('body').removeClass('mobile-nav-active');
+          $('.mobile-nav-toggle i').toggleClass('icofont-navigation-menu icofont-close');
+          $('.mobile-nav-overly').fadeOut();
+        }
+      }
+    });
+  } else if ($(".mobile-nav, .mobile-nav-toggle").length) {
+    $(".mobile-nav, .mobile-nav-toggle").hide();
+  }
 
-			$sidebar_a
-				.addClass('scrolly')
-				.on('click', function() {
+  // Navigation active state on scroll
+  var nav_sections = $('section');
+  var main_nav = $('.nav-menu, #mobile-nav');
 
-					var $this = $(this);
+  $(window).on('scroll', function() {
+    var cur_pos = $(this).scrollTop() + 200;
 
-					// External link? Bail.
-						if ($this.attr('href').charAt(0) != '#')
-							return;
+    nav_sections.each(function() {
+      var top = $(this).offset().top,
+        bottom = top + $(this).outerHeight();
 
-					// Deactivate all links.
-						$sidebar_a.removeClass('active');
+      if (cur_pos >= top && cur_pos <= bottom) {
+        if (cur_pos <= bottom) {
+          main_nav.find('li').removeClass('active');
+        }
+        main_nav.find('a[href="#' + $(this).attr('id') + '"]').parent('li').addClass('active');
+      }
+      if (cur_pos < 300) {
+        $(".nav-menu ul:first li:first").addClass('active');
+      }
+    });
+  });
 
-					// Activate link *and* lock it (so Scrollex doesn't try to activate other links as we're scrolling to this one's section).
-						$this
-							.addClass('active')
-							.addClass('active-locked');
+  // Toggle .header-scrolled class to #header when page is scrolled
+  $(window).scroll(function() {
+    if ($(this).scrollTop() > 100) {
+      $('#header').addClass('header-scrolled');
+    } else {
+      $('#header').removeClass('header-scrolled');
+    }
+  });
 
-				})
-				.each(function() {
+  if ($(window).scrollTop() > 100) {
+    $('#header').addClass('header-scrolled');
+  }
 
-					var	$this = $(this),
-						id = $this.attr('href'),
-						$section = $(id);
+  // Back to top button
+  $(window).scroll(function() {
+    if ($(this).scrollTop() > 100) {
+      $('.back-to-top').fadeIn('slow');
+    } else {
+      $('.back-to-top').fadeOut('slow');
+    }
+  });
 
-					// No section for this link? Bail.
-						if ($section.length < 1)
-							return;
+  $('.back-to-top').click(function() {
+    $('html, body').animate({
+      scrollTop: 0
+    }, 1500, 'easeInOutExpo');
+    return false;
+  });
 
-					// Scrollex.
-						$section.scrollex({
-							mode: 'middle',
-							top: '-20vh',
-							bottom: '-20vh',
-							initialize: function() {
+  // jQuery counterUp
+  $('[data-toggle="counter-up"]').counterUp({
+    delay: 10,
+    time: 1000
+  });
 
-								// Deactivate section.
-									$section.addClass('inactive');
+  // Testimonials carousel (uses the Owl Carousel library)
+  $(".testimonials-carousel").owlCarousel({
+    autoplay: true,
+    dots: true,
+    loop: true,
+    responsive: {
+      0: {
+        items: 1
+      },
+      768: {
+        items: 2
+      },
+      900: {
+        items: 3
+      }
+    }
+  });
 
-							},
-							enter: function() {
+  // Porfolio isotope and filter
+  $(window).on('load', function() {
+    var portfolioIsotope = $('.portfolio-container').isotope({
+      itemSelector: '.portfolio-item'
+    });
 
-								// Activate section.
-									$section.removeClass('inactive');
+    $('#portfolio-flters li').on('click', function() {
+      $("#portfolio-flters li").removeClass('filter-active');
+      $(this).addClass('filter-active');
 
-								// No locked links? Deactivate all links and activate this section's one.
-									if ($sidebar_a.filter('.active-locked').length == 0) {
+      portfolioIsotope.isotope({
+        filter: $(this).data('filter')
+      });
+      aos_init();
+    });
 
-										$sidebar_a.removeClass('active');
-										$this.addClass('active');
+    // Initiate venobox (lightbox feature used in portofilo)
+    $(document).ready(function() {
+      $('.venobox').venobox();
+    });
+  });
 
-									}
+  // Portfolio details carousel
+  $(".portfolio-details-carousel").owlCarousel({
+    autoplay: true,
+    dots: true,
+    loop: true,
+    items: 1
+  });
 
-								// Otherwise, if this section's link is the one that's locked, unlock it.
-									else if ($this.hasClass('active-locked'))
-										$this.removeClass('active-locked');
-
-							}
-						});
-
-				});
-
-		}
-
-	// Scrolly.
-		$('.scrolly').scrolly({
-			speed: 1000,
-			offset: function() {
-
-				// If <=large, >small, and sidebar is present, use its height as the offset.
-					if (breakpoints.active('<=large')
-					&&	!breakpoints.active('<=small')
-					&&	$sidebar.length > 0)
-						return $sidebar.height();
-
-				return 0;
-
-			}
-		});
-
-	// Spotlights.
-		$('.spotlights > section')
-			.scrollex({
-				mode: 'middle',
-				top: '-10vh',
-				bottom: '-10vh',
-				initialize: function() {
-
-					// Deactivate section.
-						$(this).addClass('inactive');
-
-				},
-				enter: function() {
-
-					// Activate section.
-						$(this).removeClass('inactive');
-
-				}
-			})
-			.each(function() {
-
-				var	$this = $(this),
-					$image = $this.find('.image'),
-					$img = $image.find('img'),
-					x;
-
-				// Assign image.
-					$image.css('background-image', 'url(' + $img.attr('src') + ')');
-
-				// Set background position.
-					if (x = $img.data('position'))
-						$image.css('background-position', x);
-
-				// Hide <img>.
-					$img.hide();
-
-			});
-
-	// Features.
-		$('.features')
-			.scrollex({
-				mode: 'middle',
-				top: '-20vh',
-				bottom: '-20vh',
-				initialize: function() {
-
-					// Deactivate section.
-						$(this).addClass('inactive');
-
-				},
-				enter: function() {
-
-					// Activate section.
-						$(this).removeClass('inactive');
-
-				}
-			});
+  // Init AOS
+  function aos_init() {
+    AOS.init({
+      duration: 1000,
+      once: true
+    });
+  }
+  $(window).on('load', function() {
+    aos_init();
+  });
 
 })(jQuery);
